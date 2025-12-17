@@ -15,7 +15,24 @@ Rode o comando de geração de snapshot para criar sua baseline inicial:
 npx hardhat gas:snapshot
 ```
 
-## 2. Funções Faltando no Relatório ("Mismatch")
+## 2. "Missing gas reporter output" / "Could not find..."
+**Mensagem de Erro:**
+> `Error: Could not find gas reporter output file.`
+
+**Causa:**
+O plugin requer que o `hardhat-gas-reporter` gere um arquivo JSON, mas não consegue encontrá-lo. Isso geralmente significa que `outputJSON` está falso ou o caminho do arquivo é personalizado e não detectado.
+
+**Solução:**
+Garanta que seu `hardhat.config.ts` tenha:
+```typescript
+gasReporter: {
+  enabled: true,
+  outputJSON: true, // Obrigatório
+  outputFile: "gas-report.json"
+}
+```
+
+## 3. Funções Faltando no Relatório ("Mismatch")
 **Sintoma:**
 Você adicionou uma nova função `buyTokens`, mas `gas:track` não a está mostrando na tabela ou falhando.
 
@@ -28,7 +45,7 @@ Atualize seu snapshot para incluir a nova função:
 npx hardhat gas:snapshot
 ```
 
-## 3. "Regression detected" persiste após otimização
+## 4. "Regression detected" persiste após otimização
 **Sintoma:**
 Você aumentou inadvertidamente o gás, viu o erro, corrigiu o código para ser otimizado novamente, mas ele ainda falha.
 
@@ -39,7 +56,7 @@ Certifique-se de que está comparando contra a baseline correta. Se você atuali
 1.  Reverta quaisquer mudanças acidentais ao `.gas-snapshot.json` via Git (`git checkout .gas-snapshot.json`).
 2.  Rode `npx hardhat gas:track` novamente para verificar sua correção contra a baseline *original* (correta).
 
-## 4. Valores de Gás Inconsistentes
+## 5. Valores de Gás Inconsistentes
 **Sintoma:**
 O uso de gás varia levemente entre execuções (ex: +/- 20 gás) causando falhas intermitentes em verificações estritas.
 
