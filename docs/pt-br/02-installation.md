@@ -1,46 +1,70 @@
 # 02. Instalação e Configuração
 
 ## Pré-requisitos
-- Node.js 18+
-- Hardhat Project configurado
+Antes de começar, certifique-se de que seu ambiente de desenvolvimento atende aos seguintes requisitos:
+- **Node.js**: v18.0.0 ou superior.
+- **Hardhat**: v2.19.0 ou superior.
+- **Gerenciador de Pacotes**: npm, yarn, pnpm, ou bun.
 
 ## Instalação
 
-Como o pacote é um plugin de desenvolvimento, instale-o como `devDependencies`:
+Instale o pacote como uma dependência de desenvolvimento (`devDependencies`). Ele é leve e não será incluído no build final do seu contrato.
 
+### Usando Npm
 ```bash
 npm install --save-dev hardhat-gas-track
-# ou
+```
+
+### Usando Yarn
+```bash
 yarn add --dev hardhat-gas-track
 ```
 
-## Configuração Básica
+## Configuração
 
-Adicione o plugin ao seu arquivo `hardhat.config.ts`:
+### 1. Importe o Plugin
+Abra seu `hardhat.config.ts` (ou `hardhat.config.js`) e importe o plugin. Isso adiciona automaticamente as tarefas `gas:snapshot` e `gas:track` ao seu ambiente.
 
 ```typescript
 import { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
-import "hardhat-gas-track"; // <--- Importe aqui
+// Importe o plugin aqui
+import "hardhat-gas-track"; 
 
 const config: HardhatUserConfig = {
   solidity: "0.8.20",
-  // Configuração opcional (valores padrão mostrados abaixo)
-  gasTrack: {
-    threshold: 5.0,     // Permite aumento de até 5%
-    strict: false,      // Se true, qualquer aumento quebra o build
-    exclude: ["Mock*"], // Ignora contratos que começam com Mock
-  }
+  // ... resto da sua configuração
 };
 
 export default config;
 ```
 
-## .gitignore
+### 2. Personalizando Configurações (Opcional)
+Embora o plugin funcione sem configuração extra, você pode personalizar a rigidez e exclusões através da propriedade `gasTrack` na sua configuração.
 
-Para evitar que snapshots locais poluam o repositório se não desejado (embora seja recomendado comitá-los para CI), ou para ignorar arquivos temporários, garanta que seu `.gitignore` esteja configurado.
+```typescript
+const config: HardhatUserConfig = {
+  solidity: "0.8.20",
+  gasTrack: {
+    threshold: 5.0,              // 5% de aumento permitido antes de aviso/falha
+    strict: false,               // Defina como true para falhar com QUALQUER aumento
+    outputFile: "gas-report.md", // Salva resultados em arquivo (útil para CI)
+    exclude: [                   // Ignora contratos ou métodos específicos
+      "Mock*", 
+      "TestContract:setup"
+    ]
+  }
+};
+```
 
-Se você deseja que o Snapshot seja a "verdade" compartilhada entre o time, **NÃO** ignore o `.gas-snapshot.json`. Comite-o no Git.
+### 3. Verificar Instalação
+Execute o seguinte comando para ver se as tarefas estão disponíveis:
+
+```bash
+npx hardhat help
+```
+
+Você deve ver `gas:snapshot` e `gas:track` listados sob as tarefas disponíveis.
 
 ---
 [⬅️ Voltar: Introdução](./01-introduction.md) | [Avançar: Conceitos Principais ➡️](./03-core-concepts.md)

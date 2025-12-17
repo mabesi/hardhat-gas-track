@@ -1,23 +1,72 @@
 # 05. Referência de Configuração
 
-Todas as opções disponíveis para o objeto `gasTrack` no `hardhat.config.ts`.
+Você pode configurar o `hardhat-gas-track` dentro do seu `hardhat.config.ts` sob o objeto `gasTrack`.
 
-| Opção | Tipo | Padrão | Descrição |
-| :--- | :--- | :--- | :--- |
-| `threshold` | `number` | `5.0` | Porcentagem máxima de aumento de gás permitida. Ex: `5.0` aceita até 5% a mais. |
-| `strict` | `boolean` | `false` | Se `true`, ignora o threshold de porcentagem e falha com qualquer aumento (diferença > 0). |
-| `outputFile` | `string` | `undefined` | Caminho para salvar um relatório (ex: para postar comentário no PR). |
-| `exclude` | `string[]` | `[]` | Lista de padrões glob para excluir contratos ou métodos. Ex: `["Test*", "Mock:*"]`. |
+## Definição de Tipo
+```typescript
+interface GasTrackUserConfig {
+  threshold?: number;
+  strict?: boolean;
+  outputFile?: string;
+  exclude?: string[];
+}
+```
 
-**Exemplo Completo:**
+## Detalhe das Opções
+
+### `threshold`
+-   **Tipo:** `number`
+-   **Padrão:** `5.0`
+-   **Descrição:** O aumento percentual máximo de custo de gás permitido.
+-   **Exemplo:** `threshold: 2.5`
+-   **Comportamento:**
+    -   Se `CustoNovo > CustoAntigo + (CustoAntigo * 0.025)`, a tarefa falha.
+    -   Se o aumento estiver entre 0-2.5%, imprime um aviso mas passa.
+
+### `strict`
+-   **Tipo:** `boolean`
+-   **Padrão:** `false`
+-   **Descrição:** Sobrescreve o `threshold` para ser efetivamente zero.
+-   **Comportamento:**
+    -   Se `strict: true`, QUALQUER aumento no custo de gás (mesmo 1 unidade) causará falha na tarefa.
+    -   Recomendado para codebases finalizadas ou checagens pré-auditoria.
+
+### `outputFile`
+-   **Tipo:** `string` (Caminho)
+-   **Padrão:** `undefined` (Logs apenas no console)
+-   **Descrição:** Se fornecido, o plugin escreverá a tabela de relatório neste arquivo (útil para artefatos de CI).
+-   **Exemplo:** `outputFile: "reports/gas-diff.txt"`
+
+### `exclude`
+-   **Tipo:** `string[]` (Padrões Glob)
+-   **Padrão:** `[]`
+-   **Descrição:** Um array de padrões para ignorar durante a comparação. Suporta curinga `*`.
+-   **Lógica de Match:** Compara contra o formato `NomeContrato:NomeMetodo`.
+-   **Exemplos:**
+    -   `["Mock*"]` - Ignora todos os contratos começando com "Mock".
+    -   `["*:setup"]` - Ignora o método "setup" em todos os lugares.
+    -   `["Token:mint"]` - Ignora especificamente a função `mint` do `Token`.
+
+## Exemplo Completo de Configuração
 
 ```typescript
-gasTrack: {
-  threshold: 2.5,
-  strict: false,
-  exclude: ["Migration:*"],
-  outputFile: "ci-report.md"
-}
+import { HardhatUserConfig } from "hardhat/config";
+import "hardhat-gas-track";
+
+const config: HardhatUserConfig = {
+  solidity: "0.8.20",
+  gasTrack: {
+    threshold: 1.0,           // Tolerância estrita de 1%
+    strict: false,
+    outputFile: "ci/gas.log",
+    exclude: [
+      "TestToken:*",          // Ignora contrato TestToken inteiro
+      "*:injected_func",      // Ignora injected_func em todo lugar
+    ]
+  }
+};
+
+export default config;
 ```
 
 ---

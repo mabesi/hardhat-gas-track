@@ -1,26 +1,37 @@
-# 03. Conceitos Principais
+# 03. Conceitos Principais e Arquitetura
 
-Entenda como o `hardhat-gas-track` toma decisões.
+Entender como o `hardhat-gas-track` processa seus dados é fundamental para dominá-lo.
 
-## 1. O Snapshot (`.gas-snapshot.json`)
-O Snapshot é um arquivo JSON que atua como a "verdade imutável" sobre os custos do seu sistema em um determinado momento. Ele mapeia `Contrato:funcao` para métricas de gás.
+## O Fluxo de Trabalho do Snapshot
+O núcleo do sistema é o **Arquivo de Snapshot** (`.gas-snapshot.json`). Este arquivo representa o estado "aprovado" do consumo de gás dos seus contratos.
 
-**Exemplo:**
-```json
-{
-  "Token:transfer": { "gas": 21000, "calls": 50 }
-}
-```
-Isso diz: "Historicamente, a função `transfer` do `Token` custa em média 21.000 gas".
+### Ciclo de Vida
+1.  **Geração:** Quando você roda `npx hardhat gas:snapshot`, o plugin executa sua suíte de testes.
+2.  **Coleta:** Ele se conecta ao provedor Ethereum para ouvir chamadas `eth_estimateGas` e recibos de transação.
+3.  **Agregação:** Ele agrupa o uso de gás por `NomeContrato` e `NomeMetodo` (ou assinatura).
+4.  **Armazenamento:** Os dados agregados (média de gás, min, max, contagem de chamadas) são salvos no arquivo JSON.
 
-## 2. Threshold (Limiar de Tolerância)
-Em desenvolvimento, pequenas flutuações de gás podem ocorrer devido a mudanças no compilador ou otimizador. O `threshold` define a tolerância para essas mudanças.
+> **Nota:** O arquivo de snapshot **DEVE** ser comitado no seu sistema de controle de versão (Git). Ele permite que seu time compartilhe a mesma linha de base de desempenho.
 
-- **Threshold = 5.0% (Padrão):** Se o novo custo for 22.000 (+4.7%), o teste PASSA (com aviso). Se for 23.000 (+9.5%), falha.
-- **Strict Mode:** Threshold é ignorado. Qualquer aumento > 0 falha o teste.
+## A Lógica de Comparação (`gas:track`)
+Quando executado em modo de verificação (`npx hardhat gas:track`), o plugin realiza uma **Análise Diferencial Relativa**.
 
-## 3. Comparação Relativa
-O plugin calcula a diferença baseada na média (Total Gás / Número de Chamadas). Isso normaliza os testes, permitindo comparar execuções com número diferente de chamadas, desde que a lógica da função seja a mesma.
+### Fórmula
+$$
+\text{Diff \%} = \left( \frac{\text{GásMédioNovo} - \text{GásMédioAntigo}}{\text{GásMédioAntigo}} \right) \times 100
+$$
+
+### Thresholds (Limiares) e Rigidez
+-   **Threshold Suave (Padrão):** Um `threshold` de 5.0 significa que você permite que o gás flutue até 5% para cima. Isso é útil porque versões do compilador Solidity ou pequenos ajustes lógicos às vezes causam variações negligenciáveis de gás.
+-   **Modo Estrito (Strict Mode):** Quando `strict: true` está ativado, o threshold é efetivamente **0%**. Qualquer aumento não-zero no custo de gás causará uma falha `exit(1)`. Isso é recomendado para auditorias cruciais ou releases finais.
+
+## Lidando com "Chamadas"
+O plugin rastreia o *número de chamadas* feitas a uma função.
+-   **Por quê?** Para calcular uma média ponderada.
+-   **Incompatibilidade:** Se sua nova suíte de testes chama uma função 100 vezes, mas o snapshot só tinha 10 chamadas, o plugin ainda compara o *Custo Médio por Chamada*. Isso torna a ferramenta robusta contra mudanças no tamanho da suíte de testes, desde que a *natureza* das chamadas permaneça similar.
+
+## Exclusões
+Às vezes você tem métodos auxiliares de teste (ex: `MintForTest`, `SetupWorld`) que são inerentemente pesados em gás e irrelevantes para produção. Você pode excluí-los usando padrões glob como `Helper:*` ou `*:test_setup` para manter seu relatório limpo e focado no código de produção.
 
 ---
 [⬅️ Voltar: Instalação](./02-installation.md) | [Avançar: Workflow CI/CD ➡️](./04-workflow-ci.md)
