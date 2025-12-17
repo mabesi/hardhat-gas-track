@@ -19,6 +19,15 @@ Automated gas regression prevention for Smart Contracts. Integrate into your CI 
 2. **Configure (`hardhat.config.ts`):**
    ```typescript
    import "hardhat-gas-track";
+   import "hardhat-gas-reporter";
+   
+   export default {
+     gasReporter: {
+       enabled: true,
+       outputJSON: true,
+       outputFile: "gas-report.json"
+     }
+   };
    ```
 
 3. **Use:**

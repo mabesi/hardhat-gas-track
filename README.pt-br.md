@@ -17,6 +17,15 @@ Prevenção automatizada de regressão de gás para Smart Contracts. Integre ao 
 2. **Configure (`hardhat.config.ts`):**
    ```typescript
    import "hardhat-gas-track";
+   import "hardhat-gas-reporter";
+   
+   export default {
+     gasReporter: {
+       enabled: true,
+       outputJSON: true,
+       outputFile: "gas-report.json"
+     }
+   };
    ```
 
 3. **Use:**

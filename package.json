@@ -1,14 +1,14 @@
 {
   "name": "hardhat-gas-track",
-  "version": "0.0.1",
+  "version": "0.0.1-alpha",
   "description": "Hardhat plugin for Gas Regression Testing",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
     }
   },
   "files": [
@@ -34,8 +34,16 @@
     "smart-contracts",
     "testing"
   ],
-  "author": "",
+  "author": "Plínio Mabesi",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mabesi/hardhat-gas-track.git"
+  },
+  "homepage": "https://github.com/mabesi/hardhat-gas-track#readme",
+  "bugs": {
+    "url": "https://github.com/mabesi/hardhat-gas-track/issues"
+  },
   "peerDependencies": {
     "ethers": "^6.0.0",
     "hardhat": "^2.19.0"
