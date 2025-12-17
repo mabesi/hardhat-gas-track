@@ -1,4 +1,4 @@
-# hardhat-gas-track
+# Hardhat Gas Track
 
 ![Banner](./banner.png)
 
