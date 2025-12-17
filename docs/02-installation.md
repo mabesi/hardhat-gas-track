@@ -1,46 +1,70 @@
 # 02. Installation and Setup
 
 ## Prerequisites
-- Node.js 18+
-- Hardhat Project configured
+Before you begin, ensure your development environment meets the following requirements:
+- **Node.js**: v18.0.0 or higher.
+- **Hardhat**: v2.19.0 or higher.
+- **Package Manager**: npm, yarn, pnpm, or bun.
 
 ## Installation
 
-Since the package is a development plugin, install it as a `devDependencies`:
+Install the package as a development dependency. It is lightweight and will not be included in your deployed build.
 
+### Using Npm
 ```bash
 npm install --save-dev hardhat-gas-track
-# or
+```
+
+### Using Yarn
+```bash
 yarn add --dev hardhat-gas-track
 ```
 
-## Basic Configuration
+## Configuration
 
-Add the plugin to your `hardhat.config.ts` file:
+### 1. Import the Plugin
+Open your `hardhat.config.ts` (or `hardhat.config.js`) and import the plugin. This automatically adds the `gas:snapshot` and `gas:track` tasks to your environment.
 
 ```typescript
 import { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
-import "hardhat-gas-track"; // <--- Import here
+// Import the plugin here
+import "hardhat-gas-track"; 
 
 const config: HardhatUserConfig = {
   solidity: "0.8.20",
-  // Optional configuration (default values shown below)
-  gasTrack: {
-    threshold: 5.0,     // Allows up to 5% increase
-    strict: false,      // If true, any increase breaks the build
-    exclude: ["Mock*"], // Ignores contracts starting with Mock
-  }
+  // ... rest of your config
 };
 
 export default config;
 ```
 
-## .gitignore
+### 2. Customizing Settings (Optional)
+While the plugin works out-of-the-box, you can customize strictness and exclusions via the `gasTrack` property in your config.
 
-To prevent local snapshots from polluting the repository if not desired (although committing them for CI is recommended), or to ignore temporary files, ensure your `.gitignore` is configured.
+```typescript
+const config: HardhatUserConfig = {
+  solidity: "0.8.20",
+  gasTrack: {
+    threshold: 5.0,              // 5% increase allowed before warning/failure
+    strict: false,               // Set to true to fail on ANY increase
+    outputFile: "gas-report.md", // Save results to a file (useful for CI)
+    exclude: [                   // Ignore specific contracts or methods
+      "Mock*", 
+      "TestContract:setup"
+    ]
+  }
+};
+```
 
-If you want the Snapshot to be the shared "truth" across the team, do **NOT** ignore `.gas-snapshot.json`. Commit it to Git.
+### 3. Verify Installation
+Run the following command to see if the tasks are available:
+
+```bash
+npx hardhat help
+```
+
+You should see `gas:snapshot` and `gas:track` listed under the available tasks.
 
 ---
 [⬅️ Back: Introduction](./01-introduction.md) | [Next: Core Concepts ➡️](./03-core-concepts.md)

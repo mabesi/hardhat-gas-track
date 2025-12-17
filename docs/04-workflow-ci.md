@@ -1,45 +1,81 @@
-# 04. CI/CD Workflow
+# 04. CI/CD Workflow Integration
 
-Automate gas checks to prevent regressions before merging.
+The true power of `hardhat-gas-track` is unleashed when integrated into your Continuous Integration pipeline. This ensures that no code is merged without passing a gas usage inspection.
 
-## Recommended Workflow
+## The Strategy
+We recommend a **Baseline-Driven** workflow:
+1.  **Main Branch:** Stores the canonical `.gas-snapshot.json`.
+2.  **Pull Requests:** Run tests and compare locally generated gas data against the committed snapshot from `main`.
 
-1.  **Main Branch (main/master):** Should contain the updated `.gas-snapshot.json`.
-2.  **Pull Request:** CI runs `gas:track` comparing the PR against the snapshot from `main`.
+## GitHub Actions Integration
 
-## GitHub Actions Example
+Below is a robust production-ready workflow file `.github/workflows/gas-check.yml`.
 
-Create a file `.github/workflows/gas-check.yml`:
-
+### Full Example
 ```yaml
-name: Gas Check
+name: Gas Regression Check
 
-on: [pull_request]
+on:
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+  pull-requests: write # Needed if you want to post comments (optional advanced setup)
 
 jobs:
-  check-gas:
+  track-gas:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout Code
+        uses: actions/checkout@v3
       
-      - name: Setup Node
+      - name: Install Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
-          
+          cache: 'npm'
+
       - name: Install Dependencies
         run: npm ci
-        
-      - name: Compile
+
+      - name: Compile Contracts
         run: npx hardhat compile
-        
-      - name: Check Gas Regression
+
+      - name: Run Gas Track
+        id: gas_check
+        # This will fail the job if gas usage exceeds the threshold
         run: npx hardhat gas:track
+        continue-on-error: false 
 ```
 
-### Updating the Snapshot
-When you make an optimization or intentional change, you need to update the "baseline".
-- Locally: Run `npx hardhat gas:snapshot` and commit the changed JSON file.
+## Best Practices
+
+### 1. Handling Valid Increases
+If you *intentionally* increased gas usage (e.g., added a new feature or security check):
+1.  Run `npx hardhat gas:snapshot` locally on your branch.
+2.  Commit the updated `.gas-snapshot.json`.
+3.  Push the changes.
+Now the CI will pass because the "New" cost matches the "Snapshot" cost (diff = 0%).
+
+### 2. Artifact Storage (Optional)
+You can configure `hardhat-gas-track` to output a file (e.g., `gas-report.md`) and use the `actions/upload-artifact` step to save the report for review, or use a bot to comment it on the PR.
+
+```typescript
+// hardhat.config.ts
+gasTrack: {
+  outputFile: "gas-report.md"
+}
+```
+
+```yaml
+      - name: Upload Gas Report
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: gas-report
+          path: gas-report.md
+```
 
 ---
 [⬅️ Back: Core Concepts](./03-core-concepts.md) | [Next: Configuration Reference ➡️](./05-configuration-reference.md)
