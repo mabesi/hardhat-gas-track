@@ -1,5 +1,7 @@
 # hardhat-gas-track
 
+![Banner](./banner.png)
+
 ![NPM Version](https://img.shields.io/npm/v/hardhat-gas-track)
 ![License](https://img.shields.io/npm/l/hardhat-gas-track)
 
