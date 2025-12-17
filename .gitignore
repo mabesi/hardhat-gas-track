@@ -8,3 +8,4 @@ typechain
 *.log
 .gas-snapshot.json
 PUBLISHING_GUIDE.md
+RELEASE_NOTES.md
