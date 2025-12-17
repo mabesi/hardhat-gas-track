@@ -39,7 +39,26 @@ const config: HardhatUserConfig = {
 export default config;
 ```
 
-### 2. Customizing Settings (Optional)
+### 2. Configure `hardhat-gas-reporter` (Required)
+This plugin relies on the output from `hardhat-gas-reporter`. You must install it and configure it to output JSON.
+
+```bash
+npm install --save-dev hardhat-gas-reporter
+```
+
+In your `hardhat.config.ts`, verify your reporter config:
+
+```typescript
+{
+  gasReporter: {
+    enabled: true,
+    outputJSON: true, // <--- CRITICAL: Plugin reads this JSON
+    outputFile: "gas-report.json"
+  }
+}
+```
+
+### 3. Customizing Settings (Optional)
 While the plugin works out-of-the-box, you can customize strictness and exclusions via the `gasTrack` property in your config.
 
 ```typescript
@@ -57,7 +76,7 @@ const config: HardhatUserConfig = {
 };
 ```
 
-### 3. Verify Installation
+### 4. Verify Installation
 Run the following command to see if the tasks are available:
 
 ```bash
