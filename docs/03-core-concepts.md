@@ -1,26 +1,26 @@
-# 03. Conceitos Principais
+# 03. Core Concepts
 
-Entenda como o `hardhat-gas-track` toma decisões.
+Understand how `hardhat-gas-track` makes decisions.
 
-## 1. O Snapshot (`.gas-snapshot.json`)
-O Snapshot é um arquivo JSON que atua como a "verdade imutável" sobre os custos do seu sistema em um determinado momento. Ele mapeia `Contrato:funcao` para métricas de gás.
+## 1. The Snapshot (`.gas-snapshot.json`)
+The Snapshot is a JSON file that acts as the "immutable truth" about your system's costs at a given point in time. It maps `Contract:function` to gas metrics.
 
-**Exemplo:**
+**Example:**
 ```json
 {
   "Token:transfer": { "gas": 21000, "calls": 50 }
 }
 ```
-Isso diz: "Historicamente, a função `transfer` do `Token` custa em média 21.000 gas".
+This states: "Historically, the `transfer` function of `Token` costs on average 21,000 gas".
 
-## 2. Threshold (Limiar de Tolerância)
-Em desenvolvimento, pequenas flutuações de gás podem ocorrer devido a mudanças no compilador ou otimizador. O `threshold` define a tolerância para essas mudanças.
+## 2. Threshold
+In development, small gas fluctuations can occur due to compiler or optimizer changes. The `threshold` defines the tolerance for these changes.
 
-- **Threshold = 5.0% (Padrão):** Se o novo custo for 22.000 (+4.7%), o teste PASSA (com aviso). Se for 23.000 (+9.5%), falha.
-- **Strict Mode:** Threshold é ignorado. Qualquer aumento > 0 falha o teste.
+- **Threshold = 5.0% (Default):** If the new cost is 22,000 (+4.7%), the test PASSES (with a warning). If it is 23,000 (+9.5%), it FAILS.
+- **Strict Mode:** Threshold is ignored. Any increase > 0 fails the test.
 
-## 3. Comparação Relativa
-O plugin calcula a diferença baseada na média (Total Gás / Número de Chamadas). Isso normaliza os testes, permitindo comparar execuções com número diferente de chamadas, desde que a lógica da função seja a mesma.
+## 3. Relative Comparison
+The plugin calculates the difference based on the average (Total Gas / Number of Calls). This normalizes the tests, allowing comparison of executions with different numbers of calls, provided the function logic remains the same.
 
 ---
-[⬅️ Voltar: Instalação](./02-installation.md) | [Avançar: Workflow CI/CD ➡️](./04-workflow-ci.md)
+[⬅️ Back: Installation](./02-installation.md) | [Next: CI/CD Workflow ➡️](./04-workflow-ci.md)

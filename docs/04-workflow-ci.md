@@ -1,15 +1,15 @@
-# 04. Workflow de CI/CD
+# 04. CI/CD Workflow
 
-Automatize a verificação de gás para evitar regressões antes do merge.
+Automate gas checks to prevent regressions before merging.
 
-## Fluxo Recomendado
+## Recommended Workflow
 
-1.  **Branch Principal (main/master):** Deve conter o arquivo `.gas-snapshot.json` atualizado.
-2.  **Pull Request:** O CI executa `gas:track` comparando a PR contra o snapshot da `main`.
+1.  **Main Branch (main/master):** Should contain the updated `.gas-snapshot.json`.
+2.  **Pull Request:** CI runs `gas:track` comparing the PR against the snapshot from `main`.
 
-## Exemplo GitHub Actions
+## GitHub Actions Example
 
-Crie um arquivo `.github/workflows/gas-check.yml`:
+Create a file `.github/workflows/gas-check.yml`:
 
 ```yaml
 name: Gas Check
@@ -37,9 +37,9 @@ jobs:
         run: npx hardhat gas:track
 ```
 
-### Atualizando o Snapshot
-Quando você faz uma otimização ou mudança intencional, precisa atualizar a "linha de base".
-- Localmente: Rode `npx hardhat gas:snapshot` e comite o arquivo JSON alterado.
+### Updating the Snapshot
+When you make an optimization or intentional change, you need to update the "baseline".
+- Locally: Run `npx hardhat gas:snapshot` and commit the changed JSON file.
 
 ---
-[⬅️ Voltar: Conceitos Principais](./03-core-concepts.md) | [Avançar: Referência de Configuração ➡️](./05-configuration-reference.md)
+[⬅️ Back: Core Concepts](./03-core-concepts.md) | [Next: Configuration Reference ➡️](./05-configuration-reference.md)

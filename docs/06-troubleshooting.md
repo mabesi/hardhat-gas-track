@@ -1,18 +1,18 @@
 # 06. Troubleshooting
 
-Soluções para problemas comuns.
+Solutions for common problems.
 
 ## "Snapshot not found"
-**Erro:** `Error: Snapshot not found. Run 'npx hardhat gas:snapshot' first.`
-**Causa:** Você está tentando rodar `gas:track` (verificação) sem ter uma linha de base.
-**Solução:** Execute `npx hardhat gas:snapshot` para gerar o arquivo `.gas-snapshot.json` inicial.
+**Error:** `Error: Snapshot not found. Run 'npx hardhat gas:snapshot' first.`
+**Cause:** You are trying to run `gas:track` (verification) without having a baseline.
+**Solution:** Run `npx hardhat gas:snapshot` to generate the initial `.gas-snapshot.json` file.
 
-## "Mismatch methods" (Métodos faltando)
-Se novos métodos foram adicionados no contrato mas não existem no snapshot, eles são ignorados na comparação (pois não há base para comparar).
-**Dica:** Sempre atualize o snapshot ao adicionar novas funcionalidades críticas.
+## "Mismatch methods" (Missing methods)
+If new methods were added to the contract but do not exist in the snapshot, they are ignored in the comparison (as there is no baseline to compare against).
+**Tip:** Always update the snapshot when adding critical new features.
 
-## Altos custos de "deploy"
-Se o custo de deploy parecer incorreto, verifique se você não está incluindo scripts de migração complexos nos seus testes. O `gas-track` captura o que o provedor Ethereum reporta.
+## High "deploy" costs
+If deploy costs seem incorrect, check if you are not including complex migration scripts in your tests. `gas-track` captures what the Ethereum provider reports.
 
 ---
-[⬅️ Voltar: Referência de Configuração](./05-configuration-reference.md)
+[⬅️ Back: Configuration Reference](./05-configuration-reference.md)

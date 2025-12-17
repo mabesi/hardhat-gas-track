@@ -1,17 +1,17 @@
-# 01. Introdução ao hardhat-gas-track
+# 01. Introduction to hardhat-gas-track
 
-## O Problema do Gás Invisível
-Em protocolos DeFi e Smart Contracts complexos, otimização de gás é dinheiro. Um aumento de 5% no custo de uma transação pode significar milhares de dólares a mais pagos pelos usuários ao longo de um ano. Frequentemente, mudanças no código Solidity (como adicionar uma variável de estado ou mudar uma lógica de loop) introduzem regressões de gás silenciosas que passam despercebidas nos testes funcionais padrão.
+## The Invisible Gas Problem
+In DeFi protocols and complex Smart Contracts, gas optimization is money. A 5% increase in transaction cost can mean thousands of dollars more paid by users over a year. Often, changes in Solidity code (like adding a state variable or changing loop logic) introduce silent gas regressions that go unnoticed in standard functional tests.
 
-## A Solução: Gas Regression Testing
-**hardhat-gas-track** é uma ferramenta especializada para CI/CD que traz visibilidade e controle sobre os custos de execução dos seus contratos.
+## The Solution: Gas Regression Testing
+**hardhat-gas-track** is a specialized tool for CI/CD that brings visibility and control over your contract execution costs.
 
-### Principais Funcionalidades:
-- 📸 **Snapshots Automatizados:** Crie uma linha de base (baseline) dos custos aceitáveis.
-- 🛡️ **Guarda de CI:** Bloqueie Pull Requests que aumentem o gás além de um limite aceitável.
-- 📊 **Relatórios Detalhados:** Visualize exatamente qual função ficou mais cara e por quanto.
+### Key Features:
+- 📸 **Automated Snapshots:** Create a baseline of acceptable costs.
+- 🛡️ **CI Guard:** Block Pull Requests that increase gas beyond an acceptable threshold.
+- 📊 **Detailed Reports:** Visualize exactly which function became more expensive and by how much.
 
-Este plugin foi desenhado para ser "Set and Forget". Configure uma vez no seu pipeline e garanta que seu protocolo permaneça eficiente para sempre.
+This plugin is designed to be "Set and Forget". Configure it once in your pipeline and ensure your protocol remains efficient forever.
 
 ---
-[Avançar: Instalação ➡️](./02-installation.md)
+[Next: Installation ➡️](./02-installation.md)

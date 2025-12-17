@@ -3,11 +3,13 @@
 ![NPM Version](https://img.shields.io/npm/v/hardhat-gas-track)
 ![License](https://img.shields.io/npm/l/hardhat-gas-track)
 
-Prevenção automatizada de regressão de gás para Smart Contracts. Integre ao seu CI e nunca mais deixe um update caro passar despercebido.
+Automated gas regression prevention for Smart Contracts. Integrate into your CI and never let an expensive update go unnoticed again.
 
-## Quick Start (3 Passos)
+🇧🇷 **[Leia em Português](./README.pt-br.md)**
 
-1. **Instale:**
+## Quick Start (3 Steps)
+
+1. **Install:**
    ```bash
    npm install --save-dev hardhat-gas-track
    ```
@@ -18,14 +20,14 @@ Prevenção automatizada de regressão de gás para Smart Contracts. Integre ao 
    ```
 
 3. **Use:**
-   - Crie a baseline: `npx hardhat gas:snapshot`
-   - Verifique mudanças: `npx hardhat gas:track`
+   - Create baseline: `npx hardhat gas:snapshot`
+   - Check changes: `npx hardhat gas:track`
 
-## Documentação
+## Documentation
 
-📚 **[Acesse a Documentação Completa](./docs/01-introduction.md)**
+📚 **[Access Complete Documentation](./docs/01-introduction.md)**
 
-Para detalhes sobre configuração avançada, CI/CD e troubleshooting, consulte o guia acima.
+For details on advanced configuration, CI/CD, and troubleshooting, check the guide above.
 
 ## 📄 License
 

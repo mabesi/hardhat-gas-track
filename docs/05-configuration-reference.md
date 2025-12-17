@@ -1,15 +1,15 @@
-# 05. Referência de Configuração
+# 05. Configuration Reference
 
-Todas as opções disponíveis para o objeto `gasTrack` no `hardhat.config.ts`.
+All available options for the `gasTrack` object in `hardhat.config.ts`.
 
-| Opção | Tipo | Padrão | Descrição |
+| Option | Type | Default | Description |
 | :--- | :--- | :--- | :--- |
-| `threshold` | `number` | `5.0` | Porcentagem máxima de aumento de gás permitida. Ex: `5.0` aceita até 5% a mais. |
-| `strict` | `boolean` | `false` | Se `true`, ignora o threshold de porcentagem e falha com qualquer aumento (diferença > 0). |
-| `outputFile` | `string` | `undefined` | Caminho para salvar um relatório (ex: para postar comentário no PR). |
-| `exclude` | `string[]` | `[]` | Lista de padrões glob para excluir contratos ou métodos. Ex: `["Test*", "Mock:*"]`. |
+| `threshold` | `number` | `5.0` | Maximum allowed gas increase percentage. E.g., `5.0` allows up to 5% more. |
+| `strict` | `boolean` | `false` | If `true`, ignores percentage threshold and fails on any increase (diff > 0). |
+| `outputFile` | `string` | `undefined` | Path to save a report (e.g., for posting PR comments). |
+| `exclude` | `string[]` | `[]` | List of glob patterns to exclude contracts or methods. E.g., `["Test*", "Mock:*"]`. |
 
-**Exemplo Completo:**
+**Complete Example:**
 
 ```typescript
 gasTrack: {
@@ -21,4 +21,4 @@ gasTrack: {
 ```
 
 ---
-[⬅️ Voltar: Workflow CI/CD](./04-workflow-ci.md) | [Avançar: Troubleshooting ➡️](./06-troubleshooting.md)
+[⬅️ Back: CI/CD Workflow](./04-workflow-ci.md) | [Next: Troubleshooting ➡️](./06-troubleshooting.md)

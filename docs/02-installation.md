@@ -1,35 +1,35 @@
-# 02. Instalação e Configuração
+# 02. Installation and Setup
 
-## Pré-requisitos
+## Prerequisites
 - Node.js 18+
-- Hardhat Project configurado
+- Hardhat Project configured
 
-## Instalação
+## Installation
 
-Como o pacote é um plugin de desenvolvimento, instale-o como `devDependencies`:
+Since the package is a development plugin, install it as a `devDependencies`:
 
 ```bash
 npm install --save-dev hardhat-gas-track
-# ou
+# or
 yarn add --dev hardhat-gas-track
 ```
 
-## Configuração Básica
+## Basic Configuration
 
-Adicione o plugin ao seu arquivo `hardhat.config.ts`:
+Add the plugin to your `hardhat.config.ts` file:
 
 ```typescript
 import { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
-import "hardhat-gas-track"; // <--- Importe aqui
+import "hardhat-gas-track"; // <--- Import here
 
 const config: HardhatUserConfig = {
   solidity: "0.8.20",
-  // Configuração opcional (valores padrão mostrados abaixo)
+  // Optional configuration (default values shown below)
   gasTrack: {
-    threshold: 5.0,     // Permite aumento de até 5%
-    strict: false,      // Se true, qualquer aumento quebra o build
-    exclude: ["Mock*"], // Ignora contratos que começam com Mock
+    threshold: 5.0,     // Allows up to 5% increase
+    strict: false,      // If true, any increase breaks the build
+    exclude: ["Mock*"], // Ignores contracts starting with Mock
   }
 };
 
@@ -38,9 +38,9 @@ export default config;
 
 ## .gitignore
 
-Para evitar que snapshots locais poluam o repositório se não desejado (embora seja recomendado comitá-los para CI), ou para ignorar arquivos temporários, garanta que seu `.gitignore` esteja configurado.
+To prevent local snapshots from polluting the repository if not desired (although committing them for CI is recommended), or to ignore temporary files, ensure your `.gitignore` is configured.
 
-Se você deseja que o Snapshot seja a "verdade" compartilhada entre o time, **NÃO** ignore o `.gas-snapshot.json`. Comite-o no Git.
+If you want the Snapshot to be the shared "truth" across the team, do **NOT** ignore `.gas-snapshot.json`. Commit it to Git.
 
 ---
-[⬅️ Voltar: Introdução](./01-introduction.md) | [Avançar: Conceitos Principais ➡️](./03-core-concepts.md)
+[⬅️ Back: Introduction](./01-introduction.md) | [Next: Core Concepts ➡️](./03-core-concepts.md)
