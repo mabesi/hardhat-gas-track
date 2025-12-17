@@ -7,3 +7,4 @@ typechain
 .DS_Store
 *.log
 .gas-snapshot.json
+PUBLISHING_GUIDE.md
