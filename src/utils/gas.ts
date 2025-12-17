@@ -1,4 +1,7 @@
-import { EthereumProvider } from "hardhat/types";
+import { HardhatRuntimeEnvironment } from "hardhat/types";
+import fs from "fs";
+import path from "path";
+import chalk from "chalk";
 
 export interface GasData {
     gas: number;
@@ -9,76 +12,97 @@ export interface GasSnapshot {
     [key: string]: GasData;
 }
 
-export class GasCollector {
-    private _data: GasSnapshot = {};
-    private _provider: EthereumProvider;
-
-    constructor(provider: EthereumProvider) {
-        this._provider = provider;
-    }
-
-    public async collect(task: () => Promise<void>): Promise<GasSnapshot> {
-        // This is a simplified collector mock.
-        // In a real scenario, we would hook into _provider.request and intercept eth_estimateGas or transaction receipts.
-        // For this demonstration project structure, we will implement a basic interception if possible, 
-        // but ultimately rely on the task usage provided in the prompt which implies we execute tests.
-
-        // Hooking logic (Conceptual - robust implementation requires parsing calldata for method names):
-        const originalSend = this._provider.send.bind(this._provider);
-
-        this._provider.send = async (method: string, params?: any[]) => {
-            if (method === "eth_estimateGas" || method === "eth_sendTransaction") {
-                // Here we would parse params to identify contract/method.
-                // For simplicity/safety, we are establishing the structure.
-                // We will simulate data collection or basic receipt tracking if practical.
-            }
-            return originalSend(method, params);
+export interface GasReporterOutput {
+    info: {
+        methods: {
+            [key: string]: {
+                gasData: number[];
+                numberOfCalls: number;
+            };
         };
-
-        await task();
-
-        // Return collected data. 
-        // Since we can't easily introspect names purely from RPC without artifacts, 
-        // we will stub this to work with 'hardhat-gas-reporter' output if available,
-        // OR we will provide a mocked return for the purpose of the structure generator 
-        // if no tests are actually present in *this* repo (it's a plugin repo).
-        //
-        // However, the prompt asks for the *plugin logic* to be implemented.
-        // I will write the logic to read from a standard output location or 
-        // assume the collector has been populated by the hook.
-
-        return this._data;
-    }
-
-    // Helper to add data (called by hook)
-    public add(name: string, gasUsed: number) {
-        if (!this._data[name]) {
-            this._data[name] = { gas: 0, calls: 0 };
-        }
-        this._data[name].gas += gasUsed;
-        this._data[name].calls += 1;
-    }
+        deployments: {
+            [key: string]: {
+                gasData: number[];
+            };
+        };
+    };
 }
 
-// NOTE: Because true gas tracking requires ABI decoding which is complex,
-// we will implement a simpler 'GasReader' in the tasks that expects 
-// a json report or we'll simulate the collection for the sake of the project generation 
-// if we cannot rely on external unnamed reporters.
-//
-// Prompt Requirement: "Executes user tests... and saves JSON".
-// I will implement a collector that hooks 'eth_estimateGas' and simply sums it up under 'Unknown' 
-// or tries to decode if we had the artifact. 
-// 
-// BETTER APPROACH FOR THIS PROMPT:
-// We will not build a full-blown tracer (too risky for single shot).
-// We will implement the TASKS assuming they have access to Gas Data.
-// Use 'eth_estimateGas' wrapping as best effort.
+export const loadGasReporterOutput = (hre: HardhatRuntimeEnvironment): GasSnapshot => {
+    // Try to find the gas reporter config
+    const reporterConfig = (hre.config as any).gasReporter;
 
-export const collectGas = async (provider: EthereumProvider, runTests: () => Promise<void>): Promise<GasSnapshot> => {
-    // Placeholder implementation that would wrap provider
-    // Real implementation would need 'artifacts' to decode calldata
-    await runTests();
-    // Return dummy data for the sake of compiling successfully and structure
-    // In a real plugin, this is 500+ lines of code.
-    return {};
+    if (!reporterConfig) {
+        throw new Error("hardhat-gas-reporter configuration not found in hardhat.config.ts");
+    }
+
+    // We expect the user to have configured an output file
+    // If they haven't specific one in config, we can't guess where it is easily without enforcing it.
+    // Common convention or requiring it:
+    const potentialFiles = [
+        reporterConfig.outputFile,
+        "gas-report.json",
+        "gasReporterOutput.json"
+    ].filter(f => !!f);
+
+    let foundPath = "";
+    for (const file of potentialFiles) {
+        const absPath = path.resolve(hre.config.paths.root, file);
+        if (fs.existsSync(absPath)) {
+            foundPath = absPath;
+            break;
+        }
+    }
+
+    if (!foundPath) {
+        console.error(chalk.red("\n❌ Error: Could not find gas reporter output file."));
+        console.log(chalk.yellow("\nPlease ensure 'hardhat-gas-reporter' is installed and configured to output JSON:"));
+        console.log(chalk.cyan(`
+      // hardhat.config.ts
+      gasReporter: {
+        enabled: true,
+        outputJSON: true,
+        outputFile: "gas-report.json"
+      }
+    `));
+        throw new Error("Missing gas reporter output");
+    }
+
+    const rawData = fs.readFileSync(foundPath, "utf8");
+    // hardhat-gas-reporter output varies by version, but often it's a flat structure or nested info.
+    // For the sake of robustness without a specific sample of their version, 
+    // we'll try to parse a generic structure or assume standard 'info' block if present.
+
+    let json: any;
+    try {
+        json = JSON.parse(rawData);
+    } catch (e) {
+        throw new Error(`Invalid JSON in ${foundPath}`);
+    }
+
+    const snapshot: GasSnapshot = {};
+
+    // Heuristic parser for standard hardhat-gas-reporter JSON output
+    // Specify format: keys are often "Contract:Method" or embedded in objects
+
+    // Logic: Iterate keys (Contract names)
+    if (json.info && json.info.methods) {
+        for (const [signature, data] of Object.entries(json.info.methods as Record<string, any>)) {
+            // data.gasData is array of numbers
+            const totalGas = (data.gasData as number[]).reduce((a, b) => a + b, 0);
+            const calls = data.numberOfCalls || data.gasData.length;
+            snapshot[signature] = { gas: totalGas, calls };
+        }
+        for (const [name, data] of Object.entries(json.info.deployments as Record<string, any>)) {
+            const totalGas = (data.gasData as number[]).reduce((a, b) => a + b, 0);
+            const calls = data.gasData.length;
+            snapshot[`${name}:deploy`] = { gas: totalGas, calls };
+        }
+    } else {
+        // Fallback or simplified format if the user is using a different reporter version?
+        // Just returning empty for safety if structure unknown, but warning
+        console.warn(chalk.yellow("Warning: Unknown JSON structure in gas report. Returning empty."));
+    }
+
+    return snapshot;
 };

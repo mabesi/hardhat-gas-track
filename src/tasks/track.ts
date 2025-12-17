@@ -21,12 +21,15 @@ task("gas:track", "Compares current gas usage against snapshot")
         console.log("Running tests to verify gas costs...");
         await hre.run("test");
 
-        // Mock current data (Simulating changes for demonstration logic)
-        // In production, collecting fresh data would use the same util as snapshot
-        const currentData: GasSnapshot = {
-            "ContractName:methodName": { gas: 155000, calls: 10 }, // Increased
-            "ContractName:deploy": { gas: 2500000, calls: 1 }      // Same
-        };
+        let currentData: GasSnapshot;
+        try {
+            const { loadGasReporterOutput } = await import("../utils/gas");
+            currentData = loadGasReporterOutput(hre);
+        } catch (error: any) {
+            console.error("Failed to track gas:", error.message);
+            process.exit(1);
+            return;
+        }
 
         const table = new Table({
             head: ["Function Name", "Old Cost", "New Cost", "Diff (%)", "Status"],
