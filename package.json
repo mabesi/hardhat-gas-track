@@ -37,20 +37,20 @@
   "author": "",
   "license": "MIT",
   "peerDependencies": {
-    "hardhat": "^2.19.0",
-    "ethers": "^6.0.0"
+    "ethers": "^6.0.0",
+    "hardhat": "^2.19.0"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
-    "ethers": "^6.0.0",
-    "hardhat": "^2.19.0",
-    "tsup": "^8.0.0",
-    "typescript": "^5.0.0",
+    "chalk": "^4.1.2",
     "cli-table3": "^0.6.0",
-    "chalk": "^4.1.2"
+    "ethers": "^6.16.0",
+    "hardhat": "^2.22.17",
+    "tsup": "^8.0.0",
+    "typescript": "^5.0.0"
   },
   "dependencies": {
-    "cli-table3": "^0.6.0",
-    "chalk": "^4.1.2"
+    "chalk": "^4.1.2",
+    "cli-table3": "^0.6.0"
   }
 }
