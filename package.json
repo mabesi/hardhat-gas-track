@@ -1,6 +1,6 @@
 {
   "name": "hardhat-gas-track",
-  "version": "0.0.1-alpha",
+  "version": "0.0.2-alpha",
   "description": "Hardhat plugin for Gas Regression Testing",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -16,8 +16,7 @@
     "README.md",
     "README.pt-br.md",
     "banner.png",
-    "LICENSE",
-    "docs"
+    "LICENSE"
   ],
   "scripts": {
     "build": "tsup",
