@@ -1,0 +1,54 @@
+{
+  "name": "hardhat-gas-track",
+  "version": "1.0.0",
+  "description": "Hardhat plugin for Gas Regression Testing",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "docs"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "watch": "tsup --watch",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint . --ext .ts",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "hardhat",
+    "plugin",
+    "gas",
+    "ethereum",
+    "smart-contracts",
+    "testing"
+  ],
+  "author": "",
+  "license": "MIT",
+  "peerDependencies": {
+    "hardhat": "^2.19.0",
+    "ethers": "^6.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "ethers": "^6.0.0",
+    "hardhat": "^2.19.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.0.0",
+    "cli-table3": "^0.6.0",
+    "chalk": "^4.1.2"
+  },
+  "dependencies": {
+    "cli-table3": "^0.6.0",
+    "chalk": "^4.1.2"
+  }
+}
