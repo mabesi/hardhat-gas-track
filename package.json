@@ -1,6 +1,6 @@
 {
   "name": "hardhat-gas-track",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Hardhat plugin for Gas Regression Testing",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
