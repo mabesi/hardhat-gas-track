@@ -1,0 +1,18 @@
+node_modules
+.env
+coverage
+coverage.json
+typechain
+typechain-types
+
+# Hardhat files
+cache
+artifacts
+
+# Gas reports
+gas-report.txt
+gas-track-report.json
+gas-reports/
+
+# Build files
+dist

@@ -34,6 +34,19 @@ Automated gas regression prevention for Smart Contracts. Integrate into your CI 
    - Create baseline: `npx hardhat gas:snapshot`
    - Check changes: `npx hardhat gas:track`
 
+## 📚 Example Project
+
+Want to see `hardhat-gas-track` in action? Check out our comprehensive example project!
+
+The **[Auction System Example](./example)** demonstrates:
+- ✅ Integration of both `hardhat-gas-reporter` and `hardhat-gas-track`
+- ✅ Real-world gas optimization techniques (Pull vs Push patterns, batch operations, storage packing)
+- ✅ Complete test suite with measurable gas comparisons
+- ✅ English and Dutch auction implementations
+- ✅ Factory pattern for efficient deployment
+
+**[→ View Example Documentation](./example/README.md)**
+
 ## Documentation
 
 📚 **[Access Complete Documentation](./docs/01-introduction.md)**

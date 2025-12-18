@@ -10,10 +10,14 @@ import "./tasks/track";
 extendConfig(
     (config: HardhatConfig, userConfig: Readonly<HardhatUserConfig>) => {
         const defaultConfig = {
+            enabled: true,
             threshold: 5.0,
             strict: false,
             outputFile: "proposals-gas-report.md",
-            exclude: []
+            exclude: [],
+            trackMethods: true,
+            trackDeployments: true,
+            compareRuns: false
         };
 
         config.gasTrack = {
